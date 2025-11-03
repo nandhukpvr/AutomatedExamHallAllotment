@@ -1,6 +1,7 @@
 import mysql.connector
 from flask import Flask, render_template,request,redirect,url_for
-
+# import remove_allotment
+import subprocess
 
 
     
@@ -30,16 +31,34 @@ def submit():
     names = request.form.getlist('name[]')
     branches = request.form.getlist('branch[]')
     reg_nums = request.form.getlist('reg_num[]')
-    students = []
-    for i in range(len(ids)):
-        students.append({
-            'id': ids[i],
-            'name': names[i],
-            'branch': branches[i],
-            'reg_num': reg_nums[i]
-        })
-    return render_template('results.html', students=students)
 
+    messages = []
+
+    for i in range(len(ids)):
+        student_id = ids[i]
+        name = names[i]
+        branch = branches[i]
+        reg_num = reg_nums[i]
+
+        # Check if student exists by id or register_no
+        cursor.execute("SELECT * FROM students WHERE id = %s OR register_no = %s", (student_id, reg_num))
+        existing = cursor.fetchone()
+
+        if existing:
+            # Student exists, do not update
+            messages.append(f"Student ID {student_id} or Register No {reg_num} already exists.")
+        else:
+            # Insert new student
+            cursor.execute("""
+                INSERT INTO students (id, name, branch, register_no)
+                VALUES (%s, %s, %s, %s)
+            """, (student_id, name, branch, reg_num))
+            messages.append(f"Student ID {student_id} added successfully.")
+
+    db.commit()
+
+    # Return all messages
+    return "<br>".join(messages)  # Or render a template with messages
 
 @app.route('/rooms')
 def rooms():
@@ -59,7 +78,13 @@ def room_students(room_no):
     students = cursor.fetchall()
     return render_template('room_students.html', students=students, room_no=room_no)
 
-
+@app.route('/remove_allotment', methods=['POST'])
+def remove_allotment():
+    # Replace 'other_script.py' with your script path
+    result = subprocess.run(['python', 'remove_allotment.py'], capture_output=True, text=True)
+    # Capture the output and return it to the user (optional)
+    output = result.stdout
+    return f"<h2>Script Output:</h2><pre>{output}</pre>"
 
 
 

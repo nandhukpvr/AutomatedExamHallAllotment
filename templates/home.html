@@ -8,5 +8,12 @@
     <form action="{{ url_for('how_many') }}">
         <button type="submit">Insert Details</button>
     </form>
+    <form action="{{ url_for('rooms') }}">
+        <button type="submit">Alloted Students Details</button>
+    </form>
+    <form action="{{ url_for('remove_allotment') }}" method="post">
+    <button type="submit">Remove Alloted Seats</button>
+</form>
+
 </body>
 </html>
