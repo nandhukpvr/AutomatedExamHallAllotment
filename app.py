@@ -2,15 +2,15 @@ import mysql.connector
 from flask import Flask, render_template,request,redirect,url_for
 # import remove_allotment
 import subprocess
-
+import pymysql
 
     
 app= Flask(__name__)
 
-db = mysql.connector.connect(
+db = pymysql.connect(
     host="localhost",
-    user="root",           # replace with your MySQL username
-    password="12345",  # replace with your MySQL password
+    user="rpi",           # replace with your MySQL username
+    password="",  # replace with your MySQL password
     database="exam_allotment")
 cursor = db.cursor()
 
@@ -90,5 +90,5 @@ def remove_allotment():
 
 
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port=5000,debug=True)
     
