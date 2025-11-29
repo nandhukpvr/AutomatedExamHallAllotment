@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Students Details</h2>
+
+    {% if messages %}
+    <h3>Recent Actions:</h3>
+    <ul style="background: #e8f5e8; padding: 15px; border-radius: 5px; border-left: 4px solid #4CAF50;">
+        {% for msg in messages %}
+        <li style="margin: 5px 0;">{{ msg }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h3>Existing Students</h3>
+    <table border="1" style="width: 100%;">
+        <tr style="background: #f0f0f0;">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Register No</th>
+            <th>Photo</th>
+            <th>Actions</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{ s[0] }}</td>
+            <td>{{ s[1] }}</td>
+            <td>{{ s[2] }}</td>
+            <td>{{ s[3] }}</td>
+            <td>
+                {% if s[4] %}
+                    <img src="{{ url_for('static', filename=s[4]) }}" width="50" height="50" style="border-radius: 5px; border: 1px solid #ddd;">
+                {% else %}
+                    <small style="color: #999;">No photo</small>
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('delete_student', sid=s[0]) }}" style="display:inline;" onsubmit="return confirm('Delete this student?');">
+                    <button type="submit" style="background: #f44336; color: white; border: none; padding: 5px 12px; border-radius: 3px; cursor: pointer;">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Add New Students</h3>
+    <p style="color: #666; font-style: italic;"><strong>💡 Fill any rows you want. Empty rows are automatically skipped!</strong></p>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <table border="1" style="width: 100%;">
+            <tr style="background: #f0f0f0;">
+                <th>Row</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Branch</th>
+                <th>Register No</th>
+                <th>Photo</th>
+            </tr>
+            {% for i in range(5) %}
+            <tr>
+                <td style="width: 40px; text-align: center;"><strong>{{ i+1 }}</strong></td>
+                <!-- FIXED: Number input WITHOUT validation blocking empty fields -->
+                <td><input type="number" name="id[]" min="1" step="1" placeholder="ID" style="width: 80px;"></td>
+                <td><input type="text" name="name[]" placeholder="Enter Name" style="width: 120px;"></td>
+                <td><input type="text" name="branch[]" placeholder="Enter Branch" style="width: 80px;"></td>
+                <td><input type="text" name="reg_num[]" placeholder="Enter Reg. No." style="width: 100px;"></td>
+                <td><input type="file" name="photo[]" accept="image/*" style="font-size: 12px;"></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit" style="background: #4CAF50; color: white; padding: 12px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">✅ Add Filled Students</button>
+    </form>
+
+    <br><br>
+    <a href="{{ url_for('database_section') }}" style="background: #2196F3; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">← Back to Database Section</a>
+</body>
+</html>

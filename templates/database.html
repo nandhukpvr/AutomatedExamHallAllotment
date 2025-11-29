@@ -1,0 +1,7 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<h2>Database Section</h2>
+<ul>
+    <li><a href="{{ url_for('students_page') }}">Students Details (view / add / delete)</a></li>
+    <li><a href="{{ url_for('exam_halls_page') }}">Exam Halls & Seats (view / modify / delete)</a></li>
+</ul>
+<a href="{{ url_for('home') }}">Back to Home</a>
