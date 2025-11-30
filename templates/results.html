@@ -1,0 +1,14 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<h2>Allotted Results</h2>
+
+<ul>
+    <li><a href="{{ url_for('rooms') }}">View Room-wise Allotted Students</a></li>
+</ul>
+
+<h3>Clear Allotment</h3>
+<form method="post" action="{{ url_for('clear_allotment') }}">
+    <button type="submit">Clear Allotment</button>
+</form>
+
+<a href="{{ url_for('home') }}">Back to Home</a>

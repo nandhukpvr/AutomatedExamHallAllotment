@@ -2,18 +2,76 @@
 <html>
 <head>
     <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
-    <h2 align="center">Welcome To Automated Exam Seating Allotment System</h2>
-    <form action="{{ url_for('how_many') }}">
-        <button type="submit">Insert Details</button>
-    </form>
-    <form action="{{ url_for('rooms') }}">
-        <button type="submit">Alloted Students Details</button>
-    </form>
-    <form action="{{ url_for('remove_allotment') }}" method="post">
-    <button type="submit">Remove Alloted Seats</button>
-</form>
+    <h2>Automated Exam Hall Allotment</h2>
+    
+    {% if time_expired %}
+        <div class="countdown expired">
+            <strong>⏰ GATE CLOSE TIME EXPIRED! System auto-stopped.</strong>
+        </div>
+    {% endif %}
+    
+    {% if end_timestamp %}
+        <div class="countdown counting" id="countdown">
+            <strong>⏰ Gate closes in: 
+                <span id="hours">00</span>h 
+                <span id="minutes">00</span>m 
+                <span id="seconds">00</span>s
+            </strong>
+        </div>
+    {% endif %}
+    
+    <h3>System Control</h3>
+    
+    {% if not is_running %}
+        <form method="post" action="{{ url_for('start_system') }}">
+            <label>Gate Close Time: <input type="time" name="gate_close_time" required style="padding: 5px;"></label>
+            <button type="submit" style="padding: 10px 20px; font-size: 16px;">Start System</button>
+        </form>
+    {% else %}
+        <form method="post" action="{{ url_for('stop_system') }}">
+            <button type="submit" class="stop-btn" style="background: #f44336; color: white; padding: 10px 20px; font-size: 16px;">Stop System</button>
+        </form>
+    {% endif %}
+    
+    <hr>
+    <a href="{{ url_for('database_section') }}">📊 Database Section</a><br>
+    <a href="{{ url_for('result_section') }}">📋 Allotted Result Section</a>
 
+    
+    {% if end_timestamp %}
+    <script>
+        const endTime = {{ end_timestamp }};  
+        
+        function updateCountdown() {
+            const now = Date.now();
+            const timeLeft = endTime - now;
+            
+            if (timeLeft <= 0) {
+                document.getElementById('countdown').innerHTML = 
+                    '<strong style="color: #c62828;">⏰ GATE CLOSE TIME EXPIRED! Refreshing...</strong>';
+                setTimeout(() => window.location.reload(), 1500);
+                return;
+            }
+            
+            const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        
+        setTimeout(() => window.location.reload(), 25000);
+    </script>
+    {% endif %}
 </body>
 </html>

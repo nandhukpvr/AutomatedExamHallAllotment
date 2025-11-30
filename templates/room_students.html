@@ -1,24 +1,44 @@
-<h2>Allocated Students for {{ room_no }}</h2>
-<table border="1">
-    <tr>
-        <th>Seat ID</th>
-        <th>Seat No</th>
-        <th>Student ID</th>
-        <th>Name</th>
-        <th>Branch</th>
-        <th>Register No</th>
-        <th>Photo</th>
-    </tr>
-    {% for s in students %}
-    <tr>
-        <td>{{ s[0] }}</td>         <!-- eh.id -->
-        <td>{{ s[1] }}</td>         <!-- seat_no -->
-        <td>{{ s[2] }}</td>         <!-- student id -->
-        <td>{{ s[3] }}</td>         <!-- name -->
-        <td>{{ s[4] }}</td>         <!-- branch -->
-        <td>{{ s[5] }}</td>         <!-- register_no -->
-        <td><img src="{{ url_for('static', filename=s[6]) }}" alt="Photo" width="60" height="60"></td> <!-- photo -->
-    </tr>
-    {% endfor %}
-</table>
-<button onclick="window.print()">Print</button>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Room {{ room_no }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        img { border-radius: 5px; border: 1px solid #ddd; }
+        @media print { button { display: none; } }
+    </style>
+</head>
+<body>
+    <h2>Allocated Students for Room {{ room_no }}</h2>
+    <table border="1">
+        <tr>
+            <th>Seat ID</th>
+            <th>Seat No</th>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Register No</th>
+            <th>Photo</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{ s[0] }}</td>
+            <td>{{ s[1] }}</td>
+            <td>{{ s[2] }}</td>
+            <td>{{ s[3] }}</td>
+            <td>{{ s[4] }}</td>
+            <td>{{ s[5] }}</td>
+            <td>
+                {% if s[6] %}
+                    <img src="{{ url_for('static', filename=s[6]) }}" alt="Photo" width="60" height="60">
+                {% else %}
+                    No photo
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button onclick="window.print()">🖨️ Print</button><br>
+    <a href="{{ url_for('rooms') }}">← Back</a>
+</body>
+</html>
